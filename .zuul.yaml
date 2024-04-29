@@ -1,0 +1,32 @@
+- job:
+    name: actions-runner-build-image
+    parent: otc-build-container-image
+    description: Build actions-runner container image
+    provides: actions-runner-image
+    vars: &actions_runner_image_vars
+      container_images:
+        - context: .
+          registry: quay.io
+          repository: opentelekomcloud/actions-runner
+          tags:
+            &imagetag "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
+
+- job:
+    name: actions-runner-upload-image
+    parent: otcinfra-upload-container-images
+    vars: *actions_runner_image_vars
+
+- project:
+    merge-mode: squash-merge
+    default-branch: main
+    vars:
+      node_version: 18
+    check:
+      jobs:
+        - actions-runner-build-image
+    gate:
+      jobs:
+        - actions-runner-upload-image
+    release:
+      jobs:
+        - actions-runner-upload-image
