@@ -19,8 +19,6 @@
 - project:
     merge-mode: squash-merge
     default-branch: main
-    vars:
-      node_version: 18
     check:
       jobs:
         - actions-runner-build-image
