@@ -1,4 +1,4 @@
-FROM ghcr.io/actions/actions-runner:v2.316.0
+FROM ghcr.io/actions/actions-runner:2.316.0
 
 USER 0
 
